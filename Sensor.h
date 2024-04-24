@@ -12,7 +12,7 @@ class Sensor {
     public:
         Sensor(int Edge, int EncodeA, int EncodeB);
         void read();
-        void distance();
+        bool detect();
     private:
         int _Edge;
         int _EncodeA;
@@ -30,6 +30,17 @@ Sensor::Sensor(int Edge, int EncodeA, int EncodeB) {
     pinMode(_EncodeB, INPUT);
 }
 
+
+bool Sensor::detect()
+{
+    int detect = digitalRead(_Edge);
+    if(detect == LOW){
+        Serial.println("Detecting object");
+        return true;
+    }else{
+        return false;
+    }
+}
 
 
 
