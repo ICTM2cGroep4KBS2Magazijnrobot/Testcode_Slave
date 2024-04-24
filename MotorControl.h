@@ -59,8 +59,7 @@ void MotorControl::read()
 
 void MotorControl::move(int richting, int snelheid)
 {
-    Serial.print("Motor Direction: ");
-    Serial.println(richting);
+    _sensor.counter();
     if(richting == 0){
         //move motor to the left
        if (!_sensor.detect()){

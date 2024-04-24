@@ -12,7 +12,7 @@ Joystick joystick(A2, A3, 7);
 // Setup function
 void setup() {
     // Initialize serial communication
-    Serial.begin(9600);
+    Serial.begin(115200);
 }
 
 void loop()
@@ -20,5 +20,6 @@ void loop()
     
     //joystick.read();
     joystick.manualMove();
+    
 
 }
