@@ -1,4 +1,5 @@
 //Motor control header file
+//See gitHub for changes
 // Created by: Odin Adema
 
 #ifndef MotorControl_h
@@ -12,36 +13,38 @@
 
 class MotorControl {
     public:
-        MotorControl(int Dir, int PWM, int Brake, int Links, int EncodeA, int EncodeB);
+        MotorControl(int Dir, int PWM, int Brake, int Links, int Rechts, int EncodeA, int EncodeB);
         void move(int richting, int snelheid);
         void read();
         void stop();
-        bool detect();
     private:
         int _Dir;
         int _PWM;
         int _Brake;
         int _Links;
+        int _Rechts;
         int _EncodeA;
         int _EncodeB;
-        Sensor _sensor = Sensor(_Links, _EncodeA, _EncodeB);
+        Sensor _sensor = Sensor(_Links, _Rechts);
+
 };
 
 //constructor
 
-MotorControl::MotorControl(int Dir, int PWM, int Brake, int Links, int EncodeA, int EncodeB) {
+MotorControl::MotorControl(int Dir, int PWM, int Brake, int Links, int Rechts, int EncodeA, int EncodeB) {
     _Dir = Dir;
     _PWM = PWM;
     _Brake = Brake;
     _Links = Links;
+    _Rechts = Rechts;
     _EncodeA = EncodeA;
     _EncodeB = EncodeB;
-    _sensor = Sensor(_Links, _EncodeA, _EncodeB);
+    _sensor = Sensor(_Links, _Rechts);
     pinMode(_Dir, OUTPUT);
     pinMode(_PWM, OUTPUT);
     pinMode(_Brake, OUTPUT);
     pinMode(_Links, INPUT_PULLUP);
-}
+};
 
 
 
@@ -55,14 +58,13 @@ void MotorControl::read()
     Serial.print(_PWM);
     Serial.print(", Motor Brake: ");
     Serial.println(_Brake);
-}
+};
 
 void MotorControl::move(int richting, int snelheid)
 {
-    _sensor.counter();
     if(richting == 0){
         //move motor to the left
-       if (!_sensor.detect()){
+       if (!_sensor.detectLinks()){
             digitalWrite(_Brake, LOW);
             analogWrite(_PWM, snelheid);
             digitalWrite(_Dir, LOW);
@@ -71,32 +73,26 @@ void MotorControl::move(int richting, int snelheid)
               
        }
     }else if (richting == 1){
-        //move motor to the right{
+        //move motor to the right
+        if (!_sensor.detectRechts()){
             digitalWrite(_Brake, LOW);
             analogWrite(_PWM, snelheid);
             digitalWrite(_Dir, HIGH);
+        } else {
+            stop();
+        }
     }else{
         //stop motor
         stop();
     }
-}
+};
 
 void MotorControl::stop()
 {
     digitalWrite(_Brake, HIGH);
     analogWrite(_PWM, 0);
-}
+};
 
-// bool MotorControl::detect()
-// {
-//     int detect = digitalRead(_Links);
-//     if(detect == LOW){
-//         Serial.println("Detecting object");
-//         return true;
-//     }else{
-//         return false;
-//     }
-// }
 
 
 
