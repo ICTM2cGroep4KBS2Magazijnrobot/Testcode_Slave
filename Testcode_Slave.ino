@@ -25,12 +25,5 @@ void loop()
         motorA.stop();
         motorB.stop();
     }
-    
-    {
-        Serial.println("Button is not pressed");
-    }
-    
-    
-    
 
 }
