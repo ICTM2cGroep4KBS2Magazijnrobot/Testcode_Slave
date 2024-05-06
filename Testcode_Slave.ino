@@ -5,20 +5,32 @@
 
 // Define the analog pin numbers for the joystick
 Joystick joystick(A2, A3, 7);
-
-
-
+Button button(8);
 
 // Setup function
 void setup() {
     // Initialize serial communication
-    Serial.begin(9600);
+    Serial.begin(115200);
 }
 
 void loop()
 {
     
-    //joystick.read();
-    joystick.manualMove();
+    if (button.getState() == HIGH)
+    {
+        joystick.manualMove();
+    }
+    else if (button.getState() == LOW)
+    {
+        motorA.stop();
+        motorB.stop();
+    }
+    
+    {
+        Serial.println("Button is not pressed");
+    }
+    
+    
+    
 
 }

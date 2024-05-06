@@ -1,4 +1,5 @@
 //Joystick header file
+//See gitHub for changes
 //Created by: Odin Adema
 
 #ifndef Joystick_h
@@ -7,8 +8,8 @@
 #include "MotorControl.h"
 
 
-    MotorControl motorA(12, 3, 9, 10, 7, 6);
-    MotorControl motorB(13, 11, 8, 2, 5, 4);
+    MotorControl motorA(12, 3, 9, 10, 0, 7, 6); //vervang 0 door de juiste pin
+    MotorControl motorB(13, 11, 8, 2, 0, 5, 4); //vervang 0 door de juiste pin
 
 //class Joystick
 
@@ -23,6 +24,8 @@ class Joystick {
         int _pressPin;
         int _xValue;
         int _yValue;
+        
+
 };
 
 //constructor
@@ -34,7 +37,7 @@ Joystick::Joystick(int xPin, int yPin, int pressPin) {
     pinMode(_xPin, INPUT);
     pinMode(_yPin, INPUT);
     pinMode(_pressPin, INPUT_PULLUP);
-}
+};
 
 //methodes
 
@@ -51,7 +54,7 @@ void Joystick::read()
     Serial.print(JoyY);
     Serial.print(", Joystick Press: ");
     Serial.println(JoyPress);
-}
+};
 
 void Joystick::manualMove()
 {
@@ -86,6 +89,9 @@ void Joystick::manualMove()
     }else{
      motorA.move(2, 0);
     }
-}
+};
+
+
+
 
 #endif
