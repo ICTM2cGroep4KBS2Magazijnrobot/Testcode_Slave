@@ -25,7 +25,7 @@ class Button {
 
     Button::Button(bool pin) {
       _pin = pin;
-      lastReading = LOW;
+      lastReading = HIGH;
       init();
     }
 
