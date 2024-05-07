@@ -66,26 +66,6 @@ bool Sensor::detectRechts()
     }
 };
 
-//bool Sensor::detectTilt()
-// {
-//     state = button.getState();
-
-//     switch (state)
-//     {
-//     case LOW:
-//         joystick.manualMove(LOW);
-//         break;
-//     case HIGH:
-//         joystick.manualMove(HIGH);
-//         break;
-    
-//     default:
-//         motorA.stop();
-//         motorB.stop();
-//         break;
-//     }
-// };
-
 
 
 #endif
