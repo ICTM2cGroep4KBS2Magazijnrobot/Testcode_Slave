@@ -68,5 +68,4 @@ bool Sensor::detectRechts()
 
 
 
-
 #endif

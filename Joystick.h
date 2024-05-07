@@ -16,7 +16,7 @@
 class Joystick {
     public:
         Joystick(int xPin, int yPin, int pressPin);
-        void manualMove();
+        void manualMove(bool state);
         void read();
     private:
         int _xPin;
@@ -24,6 +24,7 @@ class Joystick {
         int _pressPin;
         int _xValue;
         int _yValue;
+        int _state;
         
 
 };
@@ -56,11 +57,13 @@ void Joystick::read()
     Serial.println(JoyPress);
 };
 
-void Joystick::manualMove()
+void Joystick::manualMove(bool state)
 {
     int JoyX = analogRead(_xPin);
     int JoyY = analogRead(_yPin);
     int JoyPress = digitalRead(_pressPin);
+
+    if(state == 0){
 
     if(JoyX >= 550){
         int MotorXhoog = map(JoyX, 550, 1023, 0, 255);
@@ -88,6 +91,11 @@ void Joystick::manualMove()
        
     }else{
      motorA.move(2, 0);
+    }
+
+    }else{
+        motorA.stop();
+        motorB.stop();
     }
 };
 
