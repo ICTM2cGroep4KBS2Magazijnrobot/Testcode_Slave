@@ -11,26 +11,29 @@
 class Button {
   private:
     int _pin;
+    int buttonPushCounter = 0;
     bool state;
     bool lastReading;
     unsigned long lastDebounceTime = 0;
-    unsigned long debounceDelay = 50;
+    unsigned long debounceDelay = 100;
   public:
-    Button(bool pin);
+    Button(int pin);
     void init();
     void update();
     bool getState();
     bool isPressed();
+    bool singleClick();
 };
 
-    Button::Button(bool pin) {
+    Button::Button(int pin) {
       _pin = pin;
       lastReading = HIGH;
       init();
     }
 
     void Button::init() {
-      pinMode(_pin, INPUT_PULLUP);
+      pinMode(_pin, INPUT);
+
       update();
     }
 
@@ -48,7 +51,6 @@ class Button {
         // Update the 'state' attribute only if debounce is checked
         state = newReading;
       }
-
       lastReading = newReading;
     }
 
@@ -60,5 +62,6 @@ class Button {
     bool Button::isPressed() {
       return (getState() == HIGH);
     }
+
 
 #endif

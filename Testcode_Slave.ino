@@ -5,7 +5,12 @@
 
 // Define the analog pin numbers for the joystick
 Joystick joystick(A2, A3, 7);
-Button button(8);
+Button button(A4);
+bool state = LOW;
+bool previousState = LOW;
+bool werken = false;
+
+
 
 // Setup function
 void setup() {
@@ -15,15 +20,26 @@ void setup() {
 
 void loop()
 {
-    
-    if (button.getState() == HIGH)
-    {
-        joystick.manualMove();
-    }
-    else if (button.getState() == LOW)
-    {
-        motorA.stop();
-        motorB.stop();
-    }
+    Serial.print(button.getState());
+    Serial.print(" : ");
+    // Get the state of the button
+    state = button.getState();
+    // Check if the button is pressed
+    if (state == HIGH && previousState == LOW) {
+        // Print a message
+        Serial.println("Button pressed");
+        werken = !werken;
 
+    }
+    // Update the previous state
+    previousState = state;
+    Timer(millis(), 100);
+
+    Serial.println(werken);
+    if (werken == false) {
+        joystick.manualMove(LOW);
+    }
+    else {
+        joystick.manualMove(HIGH);
+    }
 }
