@@ -67,12 +67,12 @@ void Joystick::manualMove(bool state)
 
     if(JoyX >= 550){
         int MotorXhoog = map(JoyX, 550, 1023, 0, 255);
-        motorB.move(0, MotorXhoog);
+        motorB.move(1, MotorXhoog);
 
         
     }else if(JoyX <= 460){
         int MotorXlaag = map(JoyX, 0, 460, 255, 0);
-        motorB.move(1, MotorXlaag);
+        motorB.move(0, MotorXlaag);
        
        
     }else{

@@ -6,18 +6,17 @@
 
 // Define the analog pin numbers for the joystick
 Joystick joystick(A2, A3, 7);
-// Button button(A4);
+
+// Define the button pin number
 
 
 // Define the state of the button
-bool state = LOW;
-bool previousState = LOW;
-bool werken2 = false;
+bool werken2 = true;
 
 
 // Define the byte to receive the data
-byte werkenByte = 0;
-
+int command; // Received command variable
+bool i2cDataReceived = false; // Flag to indicate if I2C data has been received
 
 
 // Setup function
@@ -29,20 +28,49 @@ void setup() {
     Serial.begin(115200);
 }
 
+
+
 void loop()
 {
-   
+
+    if (i2cDataReceived) {
+        Serial.print("Received command: ");
+        procesData();
+        i2cDataReceived = false;
+    }
+
     if (werken2 == false) {
         joystick.manualMove(LOW);
     }
     else {
         joystick.manualMove(HIGH);
     }
+
+    
 }
 
 //received data handler function
 void dataRcv(int Numbytes){
 	while(Wire.available()) {	// read all bytes received
-		werken2 = Wire.read() != 0;
+		command = Wire.read();
+        i2cDataReceived = true;
 	}
+}
+
+void procesData() {
+    Serial.print("Received command: ");  // print "Received command: "
+    Serial.println(command, HEX);  // print the received command in hexadecimal format
+    if (command == 0xa1) {  // if the command is 0xa1
+        Serial.println("Zet de motors aan");  // print "Zet de motors aan"
+        werken2 = false;  // set werken2 to false
+    } else if (command == 0x02) {  // if the command is 0x02
+        Serial.println("Zet de motors uit");  // print "Zet de motors uit"
+        werken2 = true;  // set werken2 to true
+    } else if (command == 0x20) {
+        Serial.println("Zet de motors aan");  // print "Zet de motors aan"
+        werken2 = false;  // set werken2 to false
+    } else if(command == 0x10) {
+        Serial.println("Zet de motors uit");  // print "Zet de motors uit"
+        werken2 = true;  // set werken2 to true
+    }
 }
