@@ -2,10 +2,16 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "Joystick.h"
+#include <Encoder.h>
 
 
+const int CLK_PIN = 2;
+const int DT_PIN = 6;
+
+int lastClkState = HIGH;
+int counter = 0;
 // Define the analog pin numbers for the joystick
-Joystick joystick(A2, A3, 7);
+Joystick joystick(A2, A3, 7); 
 // Button button(A4);
 
 
@@ -21,28 +27,52 @@ byte werkenByte = 0;
 
 
 // Setup function
+
+
 void setup() {
-    Wire.begin(0x08);
-    Wire.onReceive(dataRcv);
+  pinMode(CLK_PIN, INPUT_PULLUP);
+  pinMode(DT_PIN, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(CLK_PIN), handleEncoder, CHANGE);
+
+  Serial.begin(9600);
 
     // Initialize serial communication
-    Serial.begin(115200);
 }
 
 void loop()
 {
-   
+  Serial.println(counter);
+
+
     if (werken2 == false) {
         joystick.manualMove(LOW);
     }
     else {
         joystick.manualMove(HIGH);
     }
+
 }
+
 
 //received data handler function
 void dataRcv(int Numbytes){
 	while(Wire.available()) {	// read all bytes received
 		werken2 = Wire.read() != 0;
 	}
+}
+
+void handleEncoder() {
+  int clkState = digitalRead(CLK_PIN);
+  int dtState = digitalRead(DT_PIN);
+
+  if (clkState != lastClkState) {
+    if (dtState != clkState) {
+      counter++;
+    } else {
+      counter--;
+    }
+  }
+
+  lastClkState = clkState;
 }
