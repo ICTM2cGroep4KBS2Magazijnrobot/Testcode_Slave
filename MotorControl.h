@@ -19,6 +19,7 @@ class MotorControl {
         void stop();
         void SetCounter(int counter);
         void PrintCounter();
+        int GetCounter();
     private:
         int _Dir;
         int _PWM;
@@ -102,6 +103,11 @@ void MotorControl::stop()
 void MotorControl::SetCounter(int counter){
   _Counter = counter;
 }
+
+int MotorControl::GetCounter(){
+  return _Counter;
+}
+
 
 void MotorControl::PrintCounter(){
     Serial.println(_Counter);

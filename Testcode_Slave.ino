@@ -2,7 +2,6 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "Joystick.h"
-#include <Encoder.h>
 #include "MotorControl.h"
 
 
@@ -77,5 +76,5 @@ void handleEncoder() {
     }
   }
   lastClkState = clkState;
-  joystick.EncodeTellerA(counter);
+  counter = joystick.EncodeTellerA(counter);
 }

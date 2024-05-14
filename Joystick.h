@@ -17,7 +17,7 @@ class Joystick {
         Joystick(int xPin, int yPin, int pressPin, MotorControl motorA, MotorControl motorB);
         void manualMove(bool state);
         void read();
-        void EncodeTellerA(int counter);
+        int EncodeTellerA(int counter);
         void EncodePrinterA();
     private:
         MotorControl motorA;
@@ -100,8 +100,9 @@ void Joystick::manualMove(bool state)
     }
 };
 
-void Joystick::EncodeTellerA(int counter) {
+int Joystick::EncodeTellerA(int counter) {
   motorA.SetCounter(counter);
+  return motorA.GetCounter();
 }
 
 void Joystick::EncodePrinterA(){
