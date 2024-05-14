@@ -3,6 +3,7 @@
 #include <Wire.h>
 #include "Joystick.h"
 #include <Encoder.h>
+#include "MotorControl.h"
 
 
 const int CLK_PIN = 2;
@@ -10,8 +11,11 @@ const int DT_PIN = 6;
 
 int lastClkState = HIGH;
 int counter = 0;
-// Define the analog pin numbers for the joystick
-Joystick joystick(A2, A3, 7); 
+
+MotorControl motorA(12, 3, 9, 10, 0, 7, 6); //vervang 0 door de juiste pin
+MotorControl motorB(13, 11, 8, 2, 0, 5, 4); //vervang 0 door de juiste pin
+
+Joystick joystick(A2, A3, 7, motorA, motorB); 
 // Button button(A4);
 
 
@@ -42,8 +46,7 @@ void setup() {
 
 void loop()
 {
-  Serial.println(counter);
-
+    joystick.EncodePrinterA();
 
     if (werken2 == false) {
         joystick.manualMove(LOW);
@@ -73,6 +76,6 @@ void handleEncoder() {
       counter--;
     }
   }
-
   lastClkState = clkState;
+  joystick.EncodeTellerA(counter);
 }
