@@ -45,7 +45,7 @@ void setup() {
 
 void loop()
 {
-    joystick.EncodePrinterA();
+    counter = joystick.EncodePrinterA();
 
     if (werken2 == false) {
         joystick.manualMove(LOW);
