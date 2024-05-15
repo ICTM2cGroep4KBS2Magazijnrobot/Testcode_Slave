@@ -55,6 +55,34 @@ void dataRcv(int Numbytes){
 	}
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 void procesData() {
     Serial.print("Received command: ");  // print "Received command: "
     Serial.println(command, HEX);  // print the received command in hexadecimal format
