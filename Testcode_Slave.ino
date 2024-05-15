@@ -5,7 +5,9 @@
 
 
 // Define the analog pin numbers for the joystick
-Joystick joystick(A2, A3, 7);
+Joystick joystick(A2, A3, 7, motorA, motorB);
+MotorControl motorA(12, 3, 9, 10, 0, 7, 6); //vervang 0 door de juiste pin
+MotorControl motorB(13, 11, 8, 2, 0, 5, 4); //vervang 0 door de juiste pin
 
 // Define the button pin number
 
@@ -32,21 +34,17 @@ void setup() {
 
 void loop()
 {
-
     if (i2cDataReceived) {
         Serial.print("Received command: ");
         procesData();
         i2cDataReceived = false;
     }
-
     if (werken2 == false) {
         joystick.manualMove(LOW);
     }
     else {
         joystick.manualMove(HIGH);
-    }
-
-    
+    }    
 }
 
 //received data handler function
