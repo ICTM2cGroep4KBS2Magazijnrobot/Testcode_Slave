@@ -12,8 +12,8 @@ const int DT_PIN = 6;
 int lastClkState = HIGH;
 int counter = 0;
 
-MotorControl motorA(12, 3, 9, 10, 0, 7, 6); //vervang 0 door de juiste pin
-MotorControl motorB(13, 11, 8, 2, 0, 5, 4); //vervang 0 door de juiste pin
+MotorControl motorA(12, 3, 9, 10, 0, 0, 0); //vervang 0 door de juiste pin
+MotorControl motorB(13, 11, 8, 7, 0, 0, 0); //vervang 0 door de juiste pin
 
 Joystick joystick(A2, A3, 7, motorA, motorB); 
 // Button button(A4);
@@ -32,12 +32,15 @@ bool i2cDataReceived = false; // Flag to indicate if I2C data has been received
 
 
 void setup() {
+Wire.begin(0x08);                // join i2c bus with address #8
+Wire.onReceive(dataRcv);        // register event
+Wire.onRequest(requestEvent); // register event
   pinMode(CLK_PIN, INPUT_PULLUP);
   pinMode(DT_PIN, INPUT_PULLUP);
 
   attachInterrupt(digitalPinToInterrupt(CLK_PIN), handleEncoder, CHANGE);
 
-  Serial.begin(9600);
+  Serial.begin(115200);
 
     // Initialize serial communication
 }
@@ -70,6 +73,14 @@ void dataRcv(int Numbytes){
         i2cDataReceived = true;
 	}
 }
+void requestEvent() {
+
+if(motorA.getdetectLinks() == true){
+    Wire.write("Detecting object");
+}
+Wire.write(counter);
+}
+
 
 void procesData() {
     Serial.print("Received command: ");  // print "Received command: "

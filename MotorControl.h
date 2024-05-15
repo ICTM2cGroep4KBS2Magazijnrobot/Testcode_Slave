@@ -20,6 +20,7 @@ class MotorControl {
         void SetCounter(int counter);
         void PrintCounter();
         int GetCounter();
+        bool getdetectLinks();
     private:
         int _Dir;
         int _PWM;
@@ -112,6 +113,10 @@ int MotorControl::GetCounter(){
 void MotorControl::PrintCounter(){
     Serial.println(_Counter);
 
+}
+
+bool MotorControl::getdetectLinks(){
+    return _sensor.detectLinks();
 }
 
 
