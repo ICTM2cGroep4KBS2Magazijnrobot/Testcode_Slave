@@ -9,7 +9,6 @@
 
 
 
-
 //class Joystick
 
 class Joystick {
@@ -34,8 +33,10 @@ class Joystick {
 
 //constructor
 
+
 Joystick::Joystick(int xPin, int yPin, int pressPin, MotorControl _motorA, MotorControl _motorB)
     : motorA(_motorA), motorB(_motorB), _xPin(xPin), _yPin(yPin), _pressPin(pressPin) {
+
     pinMode(_xPin, INPUT);
     pinMode(_yPin, INPUT);
     pinMode(_pressPin, INPUT_PULLUP);
@@ -68,12 +69,12 @@ void Joystick::manualMove(bool state)
 
     if(JoyX >= 550){
         int MotorXhoog = map(JoyX, 550, 1023, 0, 255);
-        motorB.move(0, MotorXhoog);
+        motorB.move(1, MotorXhoog);
 
         
     }else if(JoyX <= 460){
         int MotorXlaag = map(JoyX, 0, 460, 255, 0);
-        motorB.move(1, MotorXlaag);
+        motorB.move(0, MotorXlaag);
        
        
     }else{
