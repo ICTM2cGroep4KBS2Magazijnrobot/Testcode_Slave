@@ -8,6 +8,7 @@
 #include "MotorControl.h"
 
 
+
 //class Joystick
 
 class Joystick {
@@ -15,6 +16,8 @@ class Joystick {
         Joystick(int xPin, int yPin, int pressPin, MotorControl motorA, MotorControl motorB);
         void manualMove(bool state);
         void read();
+        int EncodeTellerA(int counter);
+        int EncodePrinterA();
     private:
         MotorControl motorA;
         MotorControl motorB;
@@ -30,13 +33,14 @@ class Joystick {
 
 //constructor
 
-Joystick::Joystick(int xPin, int yPin, int pressPin, MotorControl motorA, MotorControl motorB) 
-: motorA(motorA), motorB(motorB), _xPin(xPin), _yPin(yPin), _pressPin(pressPin)
-{
+
+Joystick::Joystick(int xPin, int yPin, int pressPin, MotorControl _motorA, MotorControl _motorB)
+    : motorA(_motorA), motorB(_motorB), _xPin(xPin), _yPin(yPin), _pressPin(pressPin) {
+
     pinMode(_xPin, INPUT);
     pinMode(_yPin, INPUT);
     pinMode(_pressPin, INPUT_PULLUP);
-};
+}
 
 //methodes
 
@@ -96,6 +100,16 @@ void Joystick::manualMove(bool state)
         motorB.stop();
     }
 };
+
+int Joystick::EncodeTellerA(int counter) {
+  motorA.SetCounter(counter);
+  return motorA.GetCounter();
+}
+
+int Joystick::EncodePrinterA(){
+  motorA.PrintCounter();
+  return motorA.GetCounter();
+}
 
 
 

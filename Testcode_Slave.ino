@@ -2,14 +2,21 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include "Joystick.h"
+#include "MotorControl.h"
 
 
-// Define the analog pin numbers for the joystick
-Joystick joystick(A2, A3, 7, motorA, motorB);
+
+const int CLK_PIN = 2;
+const int DT_PIN = 6;
+
+int lastClkState = HIGH;
+int counter = 0;
+
 MotorControl motorA(12, 3, 9, 10, 0, 7, 6); //vervang 0 door de juiste pin
 MotorControl motorB(13, 11, 8, 2, 0, 5, 4); //vervang 0 door de juiste pin
 
-// Define the button pin number
+Joystick joystick(A2, A3, 7, motorA, motorB); 
+// Button button(A4);
 
 
 // Define the state of the button
@@ -22,30 +29,39 @@ bool i2cDataReceived = false; // Flag to indicate if I2C data has been received
 
 
 // Setup function
+
+
 void setup() {
-    Wire.begin(0x08);
-    Wire.onReceive(dataRcv);
+  pinMode(CLK_PIN, INPUT_PULLUP);
+  pinMode(DT_PIN, INPUT_PULLUP);
+
+  attachInterrupt(digitalPinToInterrupt(CLK_PIN), handleEncoder, CHANGE);
+
+  Serial.begin(9600);
 
     // Initialize serial communication
-    Serial.begin(115200);
 }
 
 
 
 void loop()
-{
+{ 
     if (i2cDataReceived) {
         Serial.print("Received command: ");
         procesData();
         i2cDataReceived = false;
     }
+  
+   counter = joystick.EncodePrinterA();
+  
     if (werken2 == false) {
         joystick.manualMove(LOW);
     }
     else {
         joystick.manualMove(HIGH);
-    }    
+    }
 }
+
 
 //received data handler function
 void dataRcv(int Numbytes){
@@ -54,34 +70,6 @@ void dataRcv(int Numbytes){
         i2cDataReceived = true;
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 void procesData() {
     Serial.print("Received command: ");  // print "Received command: "
@@ -99,4 +87,18 @@ void procesData() {
         Serial.println("Zet de motors uit");  // print "Zet de motors uit"
         werken2 = true;  // set werken2 to true
     }
+}
+void handleEncoder() {
+  int clkState = digitalRead(CLK_PIN);
+  int dtState = digitalRead(DT_PIN);
+
+  if (clkState != lastClkState) {
+    if (dtState != clkState) {
+      counter++;
+    } else {
+      counter--;
+    }
+  }
+  lastClkState = clkState;
+  counter = joystick.EncodeTellerA(counter);
 }

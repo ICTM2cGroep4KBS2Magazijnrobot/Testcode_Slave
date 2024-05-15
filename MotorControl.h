@@ -17,6 +17,9 @@ class MotorControl {
         void move(int richting, int snelheid);
         void read();
         void stop();
+        void SetCounter(int counter);
+        void PrintCounter();
+        int GetCounter();
     private:
         int _Dir;
         int _PWM;
@@ -25,6 +28,7 @@ class MotorControl {
         int _Rechts;
         int _EncodeA;
         int _EncodeB;
+        int _Counter;
         Sensor _sensor = Sensor(_Links, _Rechts);
 
 };
@@ -32,6 +36,7 @@ class MotorControl {
 //constructor
 
 MotorControl::MotorControl(int Dir, int PWM, int Brake, int Links, int Rechts, int EncodeA, int EncodeB) {
+    _Counter = 0;
     _Dir = Dir;
     _PWM = PWM;
     _Brake = Brake;
@@ -70,6 +75,8 @@ void MotorControl::move(int richting, int snelheid)
             digitalWrite(_Dir, LOW);
        } else {
               stop();
+              SetCounter(0);
+
               
        }
     }else if (richting == 1){
@@ -92,6 +99,20 @@ void MotorControl::stop()
     digitalWrite(_Brake, HIGH);
     analogWrite(_PWM, 0);
 };
+
+void MotorControl::SetCounter(int counter){
+  _Counter = counter;
+}
+
+int MotorControl::GetCounter(){
+  return _Counter;
+}
+
+
+void MotorControl::PrintCounter(){
+    Serial.println(_Counter);
+
+}
 
 
 
