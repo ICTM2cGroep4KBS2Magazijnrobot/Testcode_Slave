@@ -37,9 +37,9 @@ void Sensor::read()
 {
     int detectLinks = digitalRead(_Links);
     int detectRechts = digitalRead(_Rechts);
-    Serial.print("Sensor Links: ");
+    // Serial.print("Sensor Links: ");
     Serial.print(detectLinks);
-    Serial.print(", Sensor Rechts: ");
+    // Serial.print(", Sensor Rechts: ");
     Serial.println(detectRechts);
 };
 

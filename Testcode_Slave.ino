@@ -13,7 +13,7 @@ int lastClkState = HIGH;
 int counter = 0;
 
 MotorControl motorA(12, 3, 9, 10, 0, 0, 0); //vervang 0 door de juiste pin
-MotorControl motorB(13, 11, 8, 7, 0, 0, 0); //vervang 0 door de juiste pin
+MotorControl motorB(13, 11, 8, 0, 7, 0, 0); //vervang 0 door de juiste pin
 
 Joystick joystick(A2, A3, 7, motorA, motorB); 
 // Button button(A4);
@@ -49,8 +49,10 @@ Wire.onRequest(requestEvent); // register event
 
 void loop()
 { 
+
+    
     if (i2cDataReceived) {
-        Serial.print("Received command: ");
+        // Serial.print("Received command: ");
         procesData();
         i2cDataReceived = false;
     }
@@ -74,42 +76,66 @@ void dataRcv(int Numbytes){
 	}
 }
 void requestEvent() {
-
-if(motorA.getdetectLinks() == true){
-    Wire.write("Detecting object");
+    // sendData2(counter);
+    // sendData("L");
+    if (motorA.getdetectLinks() == false)
+    {
+        // sendData2("L");
+        sendData(counter);
+        // Serial.println("Links");
+    }else{
+        // sendData(counter);
+        sendData2("L");
+    }    
 }
-Wire.write(counter);
+
+void sendData(int data) {
+    Wire.write('I');
+    Wire.write(data >> 8);
+    Wire.write(data & 0xFF);
+}
+
+void sendData2(String data2){
+    Wire.write('S');
+    Wire.write(data2.c_str(), data2.length());
+    Serial.println(data2);
+    // for (int i = 0; i < data.length(); i++)
+    // {
+    //     Wire.write(data[i]);
+    // }
+    
 }
 
 
 void procesData() {
-    Serial.print("Received command: ");  // print "Received command: "
-    Serial.println(command, HEX);  // print the received command in hexadecimal format
+    // Serial.print("Received command: ");  // print "Received command: "
+    // Serial.println(command, HEX);  // print the received command in hexadecimal format
     if (command == 0xa1) {  // if the command is 0xa1
-        Serial.println("Zet de motors aan");  // print "Zet de motors aan"
+        // Serial.println("Zet de motors aan");  // print "Zet de motors aan"
         werken2 = false;  // set werken2 to false
     } else if (command == 0x02) {  // if the command is 0x02
-        Serial.println("Zet de motors uit");  // print "Zet de motors uit"
+        // Serial.println("Zet de motors uit");  // print "Zet de motors uit"
         werken2 = true;  // set werken2 to true
     } else if (command == 0x20) {
-        Serial.println("Zet de motors aan");  // print "Zet de motors aan"
+        // Serial.println("Zet de motors aan");  // print "Zet de motors aan"
         werken2 = false;  // set werken2 to false
     } else if(command == 0x10) {
-        Serial.println("Zet de motors uit");  // print "Zet de motors uit"
+        // Serial.println("Zet de motors uit");  // print "Zet de motors uit"
         werken2 = true;  // set werken2 to true
     }
 }
 void handleEncoder() {
-  int clkState = digitalRead(CLK_PIN);
-  int dtState = digitalRead(DT_PIN);
+    int clkState = digitalRead(CLK_PIN);
+    int dtState = digitalRead(DT_PIN);
 
-  if (clkState != lastClkState) {
-    if (dtState != clkState) {
-      counter++;
-    } else {
-      counter--;
+    if (clkState != lastClkState) {
+        if (dtState != clkState) {
+            counter--;
+        } else {
+            counter++;
+        }
     }
-  }
-  lastClkState = clkState;
-  counter = joystick.EncodeTellerA(counter);
+    lastClkState = clkState;
+    counter = joystick.EncodeTellerA(counter);
+    motorA.SetCounter(counter);
 }

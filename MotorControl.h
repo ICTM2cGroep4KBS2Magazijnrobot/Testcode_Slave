@@ -21,6 +21,7 @@ class MotorControl {
         void PrintCounter();
         int GetCounter();
         bool getdetectLinks();
+        bool home = false;
     private:
         int _Dir;
         int _PWM;
@@ -58,11 +59,11 @@ MotorControl::MotorControl(int Dir, int PWM, int Brake, int Links, int Rechts, i
 
 void MotorControl::read() 
 {
-    Serial.print("Motor Direction: ");
+    // Serial.print("Motor Direction: ");
     Serial.print(_Dir);
-    Serial.print(", Motor PWM: ");
+    // Serial.print(", Motor PWM: ");
     Serial.print(_PWM);
-    Serial.print(", Motor Brake: ");
+    // Serial.print(", Motor Brake: ");
     Serial.println(_Brake);
 };
 
@@ -103,10 +104,12 @@ void MotorControl::stop()
 
 void MotorControl::SetCounter(int counter){
   _Counter = counter;
+  home = true;
 }
 
 int MotorControl::GetCounter(){
   return _Counter;
+  home;
 }
 
 
