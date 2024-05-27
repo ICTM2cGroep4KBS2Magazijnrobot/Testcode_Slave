@@ -114,11 +114,11 @@ int MotorControl::GetCounter(){
 
 
 void MotorControl::PrintCounter(){
-    Serial.println(_Counter);
+    // Serial.println(_Counter);
 
 }
 
-bool MotorControl::getdetectLinks(){
+boolean MotorControl::getdetectLinks(){
     return _sensor.detectLinks();
 }
 

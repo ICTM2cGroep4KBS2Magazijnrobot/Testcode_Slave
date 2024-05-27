@@ -15,7 +15,7 @@ int counter = 0;
 MotorControl motorA(12, 3, 9, 10, 0, 0, 0); //vervang 0 door de juiste pin
 MotorControl motorB(13, 11, 8, 0, 7, 0, 0); //vervang 0 door de juiste pin
 
-Joystick joystick(A2, A3, 7, motorA, motorB); 
+Joystick joystick(A2, A3, 0, motorA, motorB); 
 // Button button(A4);
 
 
@@ -126,36 +126,41 @@ void dataRcv(int Numbytes){
         i2cDataReceived = true;
 	}
 }
-void requestEvent() {
-    // sendData2(counter);
-    // sendData("L");
-    if (motorA.getdetectLinks() == false)
-    {
-        // sendData2("L");
-        sendData(counter);
-        // Serial.println("Links");
-    }else{
-        // sendData(counter);
-        sendData2("L");
-    }    
-}
+// void requestEvent() { 
+//         int reset1 = digitalRead(10);
+//         Serial.println(reset1);
+//         // Serial.println("Request event");
+//         // Serial.println(counter);
+//         sendData(10,counter);
+//         sendData(20, reset1); 
+// }
 
-void sendData(int data) {
-    Wire.write('I');
-    Wire.write(data >> 8);
-    Wire.write(data & 0xFF);
-}
-
-void sendData2(String data2){
-    Wire.write('S');
-    Wire.write(data2.c_str(), data2.length());
-    Serial.println(data2);
-    // for (int i = 0; i < data.length(); i++)
-    // {
-    //     Wire.write(data[i]);
-    // }
+void requestEvent() { 
+    int reset1 = digitalRead(10);
+    int reset2 = digitalRead(7);
+    Serial.println(reset2);
+    if (reset1 == 0){
+        counter = 0;
+        sendData(10,counter);
+    }else if (reset2 == 0){
+        sendData(20, 0);
+    }else if(reset1 == 1 && reset2 == 1){
+        // sendData(20, 1);
+        sendData(10,counter);
+    }
     
+    // sendData(10,counter);
+    // sendData(20, reset1);
 }
+
+void sendData(int id, int data) {
+    Wire.write(id);
+    Wire.write(data >> 8);
+    // Serial.println(data >> 8);
+    Wire.write(data & 0xFF);
+    // Serial.println(data & 0xFF);
+}
+
 
 
 void procesData() {
