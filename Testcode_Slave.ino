@@ -21,7 +21,13 @@ Joystick joystick(A2, A3, 7, motorA, motorB);
 
 // Define the state of the button
 bool werken2 = true;
+bool automatisch = false;
+bool XbewegenRechts = false;
+bool XbewegenLinks = false;
 
+bool YbewegenOmhoog = false;
+bool YbewegenOmlaag = false;
+bool XofY = false; //true = x mag bewegen, false = y mag bewegen
 
 // Define the byte to receive the data
 int command; // Received command variable
@@ -48,9 +54,7 @@ Wire.onRequest(requestEvent); // register event
 
 
 void loop()
-{ 
-
-    
+{   
     if (i2cDataReceived) {
         // Serial.print("Received command: ");
         procesData();
@@ -62,9 +66,56 @@ void loop()
     if (werken2 == false) {
         joystick.manualMove(LOW);
     }
-    else {
-        joystick.manualMove(HIGH);
+//    else{
+//        if(werken2 && XbewegenRechts && XofY){
+//          joystick.manualMove(HIGH);
+//          motorA.move(1,255); //x as naar rechts
+//          XofY = false;
+//        }
+//        if(werken2 && YbewegenOmhoog && !XofY){
+//          joystick.manualMove(HIGH);      
+//          motorB.move(0,255); //y as omhoog
+//          XofY = true;
+//        }
+//    }
+    else if(werken2 && XbewegenRechts){
+      joystick.manualMove(HIGH);
+      motorA.move(1,255); //x as naar rechts
     }
+    else if(werken2 && XbewegenLinks){
+      joystick.manualMove(HIGH);
+      motorA.move(0,255);
+    }
+    else if(werken2 && YbewegenOmhoog){
+      joystick.manualMove(HIGH);      
+      motorB.move(0,255); //y as omhoog
+    }
+    else if(werken2 &&YbewegenOmlaag){
+      joystick.manualMove(HIGH);
+      motorB.move(1,255);
+    }
+    else{
+      motorB.stop();
+      motorA.stop();
+    }
+//    else{
+//      joystick.manualMove(LOW);
+//    }
+//    else{
+//        joystick.manualMove(HIGH);
+//        if(Xbewegen = true){
+//          motorA.move(1,255);
+//        }
+//        else{
+//          motorA.stop();
+//        }
+//        if(Ybewegen = true){
+//          motorB.move(1,255);
+//        }
+//        else{
+//          motorB.stop();
+//        }
+//    }
 }
 
 
@@ -122,6 +173,31 @@ void procesData() {
     } else if(command == 0x10) {
         // Serial.println("Zet de motors uit");  // print "Zet de motors uit"
         werken2 = true;  // set werken2 to true
+    } 
+    else if(command == 0x66){
+      werken2 = true;
+      XbewegenRechts = true; //laat x as naar rechts bewegen
+    } else if(command == 0x67){
+      werken2 = true;
+      XbewegenRechts = false; //laat x as stoppen met bewegen
+    } else if(command == 0x68){
+      werken2 = true;
+      YbewegenOmhoog = true;
+    } else if(command == 0x69){
+      werken2 = true;
+      YbewegenOmhoog = false;
+    } else if(command == 0x70){
+      werken2 = true;
+      XbewegenLinks = true;
+    } else if(command == 0x71){
+      werken2 = true;
+      XbewegenLinks = false;
+    } else if(command == 0x72){
+      werken2 = true;
+      YbewegenOmlaag = true;
+    } else if(command == 0x73){
+      werken2 = true;
+      YbewegenOmlaag = false;;
     }
 }
 void handleEncoder() {
