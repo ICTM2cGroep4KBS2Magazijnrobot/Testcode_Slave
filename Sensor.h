@@ -8,6 +8,7 @@
 #include <Arduino.h>
 #include "Timer.h"
 #include "Button.h"
+#include <Wire.h>
 
 //class Sensors
 
@@ -15,9 +16,9 @@ class Sensor {
     public:
         Sensor(int Links, int Rechts);
         void read();
-        bool detectLinks();
-        bool detectRechts();
-        bool detectTilt();
+        boolean detectLinks();
+        boolean detectRechts();
+        boolean detectTilt();
     private:
         int _Links;
         int _Rechts;
@@ -44,22 +45,22 @@ void Sensor::read()
 };
 
 
-bool Sensor::detectLinks()
+boolean Sensor::detectLinks()
 {
     int detect = digitalRead(_Links);
     if(detect == LOW){
-        Serial.println("Detecting object");
+        // Serial.println("Detecting object");
         return true;
     }else{
         return false;
     }
 };
 
-bool Sensor::detectRechts()
+boolean Sensor::detectRechts()
 {
     int detect = digitalRead(_Rechts);
     if(detect == LOW){
-        Serial.println("Detecting object");
+        // Serial.println("Detecting object");
         return true;
     }else{
         return false;
