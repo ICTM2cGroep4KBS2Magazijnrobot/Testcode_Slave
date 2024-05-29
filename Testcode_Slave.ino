@@ -21,6 +21,7 @@ Joystick joystick(A2, A3, 0, motorA, motorB);
 
 // Define the state of the button
 bool werken2 = true;
+boolean noodstop = false;
 bool automatisch = false;
 bool XbewegenRechts = false;
 bool XbewegenLinks = false;
@@ -62,8 +63,13 @@ void loop()
     }
   
    counter = joystick.EncodePrinterA();
-  
-    if (werken2 == false) {
+
+  if (noodstop == true){
+    motorA.stop();
+    motorB.stop();
+    joystick.manualMove(HIGH);
+  }
+    else if (werken2 == false) {
         joystick.manualMove(LOW);
     }
 //    else{
@@ -78,6 +84,7 @@ void loop()
 //          XofY = true;
 //        }
 //    }
+
     else if(werken2 && XbewegenRechts){
       joystick.manualMove(HIGH);
       motorA.move(1,255); //x as naar rechts
@@ -94,6 +101,7 @@ void loop()
       joystick.manualMove(HIGH);
       motorB.move(1,255);
     }
+    
     else{
       motorB.stop();
       motorA.stop();
@@ -138,7 +146,7 @@ void dataRcv(int Numbytes){
 void requestEvent() { 
     int reset1 = digitalRead(10);
     int reset2 = digitalRead(7);
-    Serial.println(reset2);
+//    Serial.println(reset2);
     if (reset1 == 0){
         counter = 0;
         sendData(10,counter);
@@ -147,6 +155,7 @@ void requestEvent() {
     }else if(reset1 == 1 && reset2 == 1){
         // sendData(20, 1);
         sendData(10,counter);
+        sendData(20, 0);
     }
     
     // sendData(10,counter);
@@ -168,39 +177,53 @@ void procesData() {
     // Serial.println(command, HEX);  // print the received command in hexadecimal format
     if (command == 0xa1) {  // if the command is 0xa1
         // Serial.println("Zet de motors aan");  // print "Zet de motors aan"
+        noodstop = false;
         werken2 = false;  // set werken2 to false
+    } else if(command == 0x11){
+       noodstop = true;
     } else if (command == 0x02) {  // if the command is 0x02
         // Serial.println("Zet de motors uit");  // print "Zet de motors uit"
+        noodstop = false;
         werken2 = true;  // set werken2 to true
     } else if (command == 0x20) {
         // Serial.println("Zet de motors aan");  // print "Zet de motors aan"
+        noodstop = false;
         werken2 = false;  // set werken2 to false
     } else if(command == 0x10) {
         // Serial.println("Zet de motors uit");  // print "Zet de motors uit"
+        noodstop = false;
         werken2 = true;  // set werken2 to true
     } 
     else if(command == 0x66){
+      noodstop = false;
       werken2 = true;
       XbewegenRechts = true; //laat x as naar rechts bewegen
     } else if(command == 0x67){
+      noodstop = false;
       werken2 = true;
       XbewegenRechts = false; //laat x as stoppen met bewegen
     } else if(command == 0x68){
+      noodstop = false;
       werken2 = true;
       YbewegenOmhoog = true;
     } else if(command == 0x69){
+      noodstop = false;
       werken2 = true;
       YbewegenOmhoog = false;
     } else if(command == 0x70){
+      noodstop = false;
       werken2 = true;
       XbewegenLinks = true;
     } else if(command == 0x71){
+      noodstop = false;
       werken2 = true;
       XbewegenLinks = false;
     } else if(command == 0x72){
+      noodstop = false;
       werken2 = true;
       YbewegenOmlaag = true;
     } else if(command == 0x73){
+      noodstop = false;
       werken2 = true;
       YbewegenOmlaag = false;;
     }
