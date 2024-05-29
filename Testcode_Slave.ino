@@ -178,8 +178,7 @@ void procesData() {
     } else if(command == 0x10) {
         // Serial.println("Zet de motors uit");  // print "Zet de motors uit"
         werken2 = true;  // set werken2 to true
-    } 
-    else if(command == 0x66){
+    } else if(command == 0x66){
       werken2 = true;
       XbewegenRechts = true; //laat x as naar rechts bewegen
     } else if(command == 0x67){
