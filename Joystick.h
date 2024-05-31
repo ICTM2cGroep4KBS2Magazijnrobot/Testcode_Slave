@@ -1,4 +1,5 @@
 //Joystick header file
+//See gitHub for changes
 //Created by: Odin Adema
 
 #ifndef Joystick_h
@@ -7,30 +8,35 @@
 #include "MotorControl.h"
 
 
-    MotorControl motorA(12, 3, 9, 10, 7, 6);
-    MotorControl motorB(13, 11, 8, 2, 5, 4);
 
 //class Joystick
 
 class Joystick {
     public:
-        Joystick(int xPin, int yPin, int pressPin);
-        void manualMove();
+        Joystick(int xPin, int yPin, int pressPin, MotorControl motorA, MotorControl motorB);
+        void manualMove(bool state);
         void read();
+        int EncodeTellerA(int counter);
+        int EncodePrinterA();
     private:
+        MotorControl motorA;
+        MotorControl motorB;
         int _xPin;
         int _yPin;
         int _pressPin;
         int _xValue;
         int _yValue;
+        int _state;
+        
+
 };
 
 //constructor
 
-Joystick::Joystick(int xPin, int yPin, int pressPin) {
-    _xPin = xPin;
-    _yPin = yPin;
-    _pressPin = pressPin;
+
+Joystick::Joystick(int xPin, int yPin, int pressPin, MotorControl _motorA, MotorControl _motorB)
+    : motorA(_motorA), motorB(_motorB), _xPin(xPin), _yPin(yPin), _pressPin(pressPin) {
+
     pinMode(_xPin, INPUT);
     pinMode(_yPin, INPUT);
     pinMode(_pressPin, INPUT_PULLUP);
@@ -51,22 +57,24 @@ void Joystick::read()
     Serial.print(JoyY);
     Serial.print(", Joystick Press: ");
     Serial.println(JoyPress);
-}
+};
 
-void Joystick::manualMove()
+void Joystick::manualMove(bool state)
 {
     int JoyX = analogRead(_xPin);
     int JoyY = analogRead(_yPin);
     int JoyPress = digitalRead(_pressPin);
 
+    if(state == 0){
+
     if(JoyX >= 550){
         int MotorXhoog = map(JoyX, 550, 1023, 0, 255);
-        motorB.move(0, MotorXhoog);
+        motorB.move(1, MotorXhoog);
 
         
     }else if(JoyX <= 460){
         int MotorXlaag = map(JoyX, 0, 460, 255, 0);
-        motorB.move(1, MotorXlaag);
+        motorB.move(0, MotorXlaag);
        
        
     }else{
@@ -86,6 +94,24 @@ void Joystick::manualMove()
     }else{
      motorA.move(2, 0);
     }
+
+    }else{
+        motorA.stop();
+        motorB.stop();
+    }
+};
+
+int Joystick::EncodeTellerA(int counter) {
+  motorA.SetCounter(counter);
+  return motorA.GetCounter();
 }
+
+int Joystick::EncodePrinterA(){
+  motorA.PrintCounter();
+  return motorA.GetCounter();
+}
+
+
+
 
 #endif
